@@ -10,7 +10,7 @@ def main(arguments : list):
         return
     
     # check if user set output path
-    if (arguments.index("-o")):
+    if ("-o" in arguments):
 
         output_directory = check_output_path(arguments[arguments.index("-o") + 1])
 
