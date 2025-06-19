@@ -2,30 +2,17 @@ import os
 import sys
 import subprocess
 
+
 def main(arguments : list):
 
-    output_directory = ""
-    if (not check_input_path(arguments)):
-        print("Invalid argument. Please check --help")
+    print(check_arguments_validity(arguments))
+    
+    if (not check_arguments_validity(arguments)):
         return
-    
-    # check if user set output path
-    if ("-o" in arguments):
 
-        output_directory = check_output_path(arguments[arguments.index("-o") + 1])
+    output_directory = set_output_path(arguments)
 
-        if (output_directory == ""):
-            print("Invalid argument. Please check --help")
-            return
-        else:
-            print("Found output folder")
-
-    else:
-
-        create_output_path() 
-        
-        output_directory = "./converted/"
-    
+    print(output_directory)
     # select path of disc images
     disc_files : list = os.listdir(arguments[1])
 
@@ -44,29 +31,92 @@ def main(arguments : list):
 
             subprocess.run(binmerge_arguments)
            
-        
-def create_output_path():
+# if user don't set output folder create it manually
+def check_input_path(path : str) -> bool:
 
-    if (not "converted" in os.listdir("./")):
-        os.mkdir("./converted")
+    if os.path.isdir(path):
 
+        print("Set input directory " + str(os.path.abspath(path)))
 
-def check_input_path(arguments : list) -> bool:
-
-    if os.path.isdir(arguments[1]):
-        print("Found entered directory")
-        # check if user set output  path
         return True
 
     else:
-        print("Inserted argument is not folder")
+
+        print("Inserted argument is not directory")
+
         return False
 
+
 def check_output_path(path : str) -> str:
+
     if (os.path.isdir(path)):
+
+        print("Set output directory in " + str(os.path.abspath(path)))
+
         return path
+
     else:
+
+        print("No output directory inserted")
+
         return "" 
+
+
+def create_output_path():
+
+    if (not "converted" in os.listdir("./")):
+
+        os.mkdir("./converted")
+        print("Created output path " + str(os.path.abspath("./converted")))
+
+    else:
+
+        print("Use output path " +  str(os.path.abspath("./converted")))
+
+
+def set_output_path(arguments : list) -> str:
+    if ("-o" in arguments):
+
+        print(arguments[arguments.index("-o") + 1])
+        return arguments[arguments.index("-o") + 1]
+    
+    else:
+        
+        create_output_path()
+        return "./converted/"
+
+# check all given arguments
+def check_arguments_validity(arguments : list) -> bool: 
+
+    if (not check_input_path(arguments[1])):
+
+        print("Invalid argument for input directory. Entered argument " 
+              + arguments[1] 
+              + " is not directory. Please check --help")
+
+        return False
+    
+    elif ("-o" in arguments):
+
+        # check if directory path after --o exists
+        if (len(arguments) < arguments.index("-o") + 1):
+            print("Invalid argument for output directory. Output directory " +
+                  "can't be empty")
+            
+            return False
+
+        # check if entered output directory is directory
+        elif (check_output_path(arguments[arguments.index("-o") + 1]) == ""):
+
+            print("Invalid argument for output directory. Entered argument " 
+                  + arguments[arguments.index("-o") + 1]
+                  + " is not directory. Please check --help")
+
+            return False
+
+
+    return True
+
 
 if __name__ == "__main__":
     main(sys.argv)
