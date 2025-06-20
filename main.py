@@ -18,20 +18,28 @@ def main(arguments : list):
         # for binmerge we need only file with .cue extension
         if disc_file.split('.')[-1] == 'cue':
 
-            if (not delete_converted_files(disc_file, output_directory)):
+            disc_path = output_directory + "/" + disc_file.split(".")[0]
 
-                return
+            if (not delete_converted_files(disc_file, disc_path)):
 
-            binmerge_arguments = ["python3",
-                            "./binmerge/binmerge", 
-                            arguments[1] + "/" + disc_file,
-                            disc_file.split(".")[0], 
-                                  "-o"]
+                continue
 
-            binmerge_arguments.append(output_directory)
+            else:
 
-            subprocess.run(binmerge_arguments)
-           
+                if (not os.path.exists(output_directory + "/" + disc_file.split(".")[0])):
+                    os.mkdir(output_directory + "/" + disc_file.split(".")[0])
+
+
+                binmerge_arguments = ["python3",
+                                "./binmerge/binmerge", 
+                                arguments[1] + "/" + disc_file,
+                                disc_file.split(".")[0], 
+                                      "-o"]
+
+                binmerge_arguments.append(disc_path)
+
+                subprocess.run(binmerge_arguments)
+               
 # if user don't set output folder create it manually
 def check_input_path(path : str) -> bool:
 
