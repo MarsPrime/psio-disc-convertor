@@ -5,14 +5,11 @@ import subprocess
 
 def main(arguments : list):
 
-    print(check_arguments_validity(arguments))
-    
     if (not check_arguments_validity(arguments)):
         return
 
     output_directory = set_output_path(arguments)
 
-    print(output_directory)
     # select path of disc images
     disc_files : list = os.listdir(arguments[1])
 
@@ -20,6 +17,10 @@ def main(arguments : list):
 
         # for binmerge we need only file with .cue extension
         if disc_file.split('.')[-1] == 'cue':
+
+            if (not delete_converted_files(disc_file, output_directory)):
+
+                return
 
             binmerge_arguments = ["python3",
                             "./binmerge/binmerge", 
@@ -48,6 +49,7 @@ def check_input_path(path : str) -> bool:
 
 
 def check_output_path(path : str) -> str:
+
 
     if (os.path.isdir(path)):
 
@@ -117,6 +119,74 @@ def check_arguments_validity(arguments : list) -> bool:
 
     return True
 
+def delete_converted_files(disc_file : str, output_directory : str) -> bool:
+
+    if (check_converted_file_existence(os.path.abspath(output_directory) + 
+                                       "/" +
+                                       disc_file)):
+        message : str = "Program detects converted files in output path "
+        message += "for file " + disc_file.split(".")[0] + "."
+        message += " Delete this files? Enter y for YES or n for NO "
+
+        if (not show_dialog(message)):
+
+            print("User abort operation. Close.")
+            
+            return False
+
+        else:
+            
+            print("Delete converted files")
+
+            os.remove(os.path.abspath(output_directory) + "/" + disc_file)
+            os.remove(os.path.abspath(output_directory) + "/" 
+                      + disc_file.split(".")[0] + ".bin")
+
+            return True
+
+    return True
+
+
+
+
+
+def check_converted_file_existence(output_path : str) -> bool:
+
+    if os.path.exists(output_path):
+
+        return True
+    
+    else:
+
+        return False
+
+
+def show_dialog(text : str) -> bool:
+    
+    dialog_cicle : bool = True
+    answer : str
+
+    while (dialog_cicle):
+
+        print(20 * "#")
+        print(text)
+        print(20 * "#")
+
+        answer = input("Enter answer: ")
+
+        if (answer == "y"):
+
+            return True
+        
+        elif (answer == "n"):
+
+            return False
+
+        else:
+            
+            continue
+        
+        
 
 if __name__ == "__main__":
     main(sys.argv)
