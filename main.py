@@ -39,6 +39,13 @@ def main(arguments : list):
                 binmerge_arguments.append(disc_path)
 
                 subprocess.run(binmerge_arguments)
+                
+
+                cue2cu2_argumets = ["python3",
+                                "./cue2cu2/cue2cu2.py", 
+                         os.path.abspath(output_directory) + "/" + disc_file.split(".")[0]+ "/" + disc_file]
+                subprocess.run(cue2cu2_argumets)
+
                
 # if user don't set output folder create it manually
 def check_input_path(path : str) -> bool:
