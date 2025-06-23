@@ -8,8 +8,10 @@ It's just wrapper for this programs:
 
 ## Usage
 ```bash 
-
+# python3
 python3 main.py /game_file.cue -o /output_directory
+
+# uv
 uv run main.py /game_file.cue -o /output_directory
 
 ```
