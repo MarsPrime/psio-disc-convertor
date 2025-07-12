@@ -2,7 +2,6 @@ import os
 import sys
 import subprocess
 
-
 def main(arguments : list):
 
     if (not check_arguments_validity(arguments)):
@@ -12,42 +11,84 @@ def main(arguments : list):
     output_directory = set_output_directory(arguments)
 
     # select path of disc images
-    disc_files : list = os.listdir(arguments[1])
+    input_directory_files: list = os.listdir(arguments[1])
 
-    for disc_file in disc_files:
+    cue_files = scan_files(input_directory_files)
+
+
+    for i in cue_files:
+         
+         if cue_files[i] > 1:
+
+             merge_bin_files(i, arguments[1], output_directory)
+             
+
+
+            #                
+            #
+            #                cue2cu2_argumets = ["python3",
+            #                                "./cue2cu2/cue2cu2.py", 
+            #                         os.path.abspath(output_directory) + "/" + disc_file.split(".")[0]+ "/" + disc_file]
+            #                subprocess.run(cue2cu2_argumets)
+            #
+               
+# function scan files in input folder and reterns dictionary that has file names
+# as keys and values as count of bin files for every cue file 
+def scan_files(input_directory : list) -> dict:
+
+    cue_bin_files = {}
+
+    for disc_file in input_directory:
+
+        bin_files_count = 0
 
         # for binmerge we need only file with .cue extension
         if disc_file.split('.')[-1] == 'cue':
 
-            disc_path = output_directory + "/" + disc_file.split(".")[0]
+            cue_bin_files[disc_file] = scan_bin_files(input_directory, disc_file) 
 
-            if (not delete_converted_files(disc_file, disc_path)):
+    return(cue_bin_files)
 
-                continue
+def scan_bin_files(input_directory : list, disc_file: str) -> int:
 
-            else:
+    bin_files_count = 0
 
-                if (not os.path.exists(output_directory + "/" + disc_file.split(".")[0])):
-                    os.mkdir(output_directory + "/" + disc_file.split(".")[0])
+    for i in input_directory:
+        
+        if i.split('.')[-1] == 'bin' and disc_file.split(".cue")[0] in i:
+
+            bin_files_count += 1
+
+    return bin_files_count
+
+# function that will execute binmerge
+def merge_bin_files(cue_file : str, input_directory : str,  output_directory : str):
+
+    disc_path = output_directory + "/" + cue_file.split(".")[0]
+
+    if (not delete_converted_files(cue_file, disc_path)):
+
+        return 
+
+    else:
+
+        if (not os.path.exists(output_directory + "/" + cue_file.split(".")[0])):
+            os.mkdir(output_directory + "/" + cue_file.split(".")[0])
 
 
-                binmerge_arguments = ["python3",
-                                "./binmerge/binmerge", 
-                                arguments[1] + "/" + disc_file,
-                                disc_file.split(".")[0], 
-                                      "-o"]
+        binmerge_arguments = ["python3",
+                        "./binmerge/binmerge", 
+                        input_directory + "/" + cue_file,
+                        cue_file.split(".")[0], 
+                              "-o"]
 
-                binmerge_arguments.append(disc_path)
+        binmerge_arguments.append(disc_path)
 
-                subprocess.run(binmerge_arguments)
-                
+        subprocess.run(binmerge_arguments)
 
-                cue2cu2_argumets = ["python3",
-                                "./cue2cu2/cue2cu2.py", 
-                         os.path.abspath(output_directory) + "/" + disc_file.split(".")[0]+ "/" + disc_file]
-                subprocess.run(cue2cu2_argumets)
 
-               
+        show_message("File " + cue_file + " converted")
+
 # if user don't set output folder create it manually
 def check_input_path(path : str) -> bool:
 
@@ -65,7 +106,6 @@ def check_input_path(path : str) -> bool:
 
 
 def check_output_directory(path : str) -> str:
-
 
     if (os.path.isdir(path)):
 
@@ -200,11 +240,11 @@ def show_dialog(text : str) -> bool:
 
         print()
 
-        if (answer == "y"):
+        if (answer == "y" or answer == "Y"):
 
             return True
         
-        elif (answer == "n"):
+        elif (answer == "n" or answer == "N"):
 
             return False
 
