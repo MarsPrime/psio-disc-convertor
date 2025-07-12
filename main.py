@@ -52,13 +52,13 @@ def check_input_path(path : str) -> bool:
 
     if os.path.isdir(path):
 
-        print("Set input directory " + str(os.path.abspath(path)))
+        show_message("Set input directory " + str(os.path.abspath(path)))
 
         return True
 
     else:
 
-        print("Inserted argument is not directory")
+        show_message("Inserted argument is not directory")
 
         return False
 
@@ -68,13 +68,13 @@ def check_output_path(path : str) -> str:
 
     if (os.path.isdir(path)):
 
-        print("Set output directory in " + str(os.path.abspath(path)))
+        show_message("Set output directory in " + str(os.path.abspath(path)))
 
         return path
 
     else:
 
-        print("No output directory inserted")
+        show_message("No output directory inserted")
 
         return "" 
 
@@ -84,17 +84,18 @@ def create_output_path():
     if (not "converted" in os.listdir("./")):
 
         os.mkdir("./converted")
-        print("Created output path " + str(os.path.abspath("./converted")))
+        show_message("Created output path " + str(os.path.abspath("./converted")))
 
     else:
 
-        print("Use output path " +  str(os.path.abspath("./converted")))
+        show_message("Use output path " +  str(os.path.abspath("./converted")))
 
 
 def set_output_path(arguments : list) -> str:
+
     if ("-o" in arguments):
 
-        print(arguments[arguments.index("-o") + 1])
+        show_message(arguments[arguments.index("-o") + 1])
         return arguments[arguments.index("-o") + 1]
     
     else:
@@ -107,7 +108,7 @@ def check_arguments_validity(arguments : list) -> bool:
 
     if (not check_input_path(arguments[1])):
 
-        print("Invalid argument for input directory. Entered argument " 
+        show_message("Invalid argument for input directory. Entered argument " 
               + arguments[1] 
               + " is not directory. Please check --help")
 
@@ -117,7 +118,8 @@ def check_arguments_validity(arguments : list) -> bool:
 
         # check if directory path after --o exists
         if (len(arguments) < arguments.index("-o") + 1):
-            print("Invalid argument for output directory. Output directory " +
+
+            show_message("Invalid argument for output directory. Output directory " +
                   "can't be empty")
             
             return False
@@ -125,7 +127,7 @@ def check_arguments_validity(arguments : list) -> bool:
         # check if entered output directory is directory
         elif (check_output_path(arguments[arguments.index("-o") + 1]) == ""):
 
-            print("Invalid argument for output directory. Entered argument " 
+            show_message("Invalid argument for output directory. Entered argument " 
                   + arguments[arguments.index("-o") + 1]
                   + " is not directory. Please check --help")
 
@@ -145,13 +147,13 @@ def delete_converted_files(disc_file : str, output_directory : str) -> bool:
 
         if (not show_dialog(message)):
 
-            print("User abort operation. Close.")
+            show_message("User abort operation. Close.")
             
             return False
 
         else:
             
-            print("Delete converted files")
+            show_message("Delete converted files")
 
             os.remove(os.path.abspath(output_directory) + "/" + disc_file)
             os.remove(os.path.abspath(output_directory) + "/" 
@@ -160,8 +162,6 @@ def delete_converted_files(disc_file : str, output_directory : str) -> bool:
             return True
 
     return True
-
-
 
 
 
@@ -175,6 +175,13 @@ def check_converted_file_existence(output_path : str) -> bool:
 
         return False
 
+def show_message(text : str):
+
+    print()
+    print(20 * "#")
+    print(text)
+    print(20 * "#")
+    print()
 
 def show_dialog(text : str) -> bool:
     
@@ -183,11 +190,14 @@ def show_dialog(text : str) -> bool:
 
     while (dialog_cicle):
 
+        print()
         print(20 * "#")
         print(text)
         print(20 * "#")
 
         answer = input("Enter answer: ")
+
+        print()
 
         if (answer == "y"):
 
