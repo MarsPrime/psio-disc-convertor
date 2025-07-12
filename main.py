@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import shutil
 
 def main(arguments : list):
 
@@ -13,14 +14,49 @@ def main(arguments : list):
     # select path of disc images
     input_directory_files: list = os.listdir(arguments[1])
 
-    cue_files = scan_files(input_directory_files)
+    cue_files = scan_files(sorted(input_directory_files))
 
 
-    for i in cue_files:
+    for cue_file in cue_files:
          
-         if cue_files[i] > 1:
+        if cue_files[cue_file] > 1:
 
-             merge_bin_files(i, arguments[1], output_directory)
+             merge_bin_files(cue_file, arguments[1], output_directory)
+        else:
+
+            if (os.path.exists(output_directory + "/" + cue_file.split("(Disc")[0])):
+
+                show_message("File " + cue_file + 
+                             " moved to directory " + 
+                            output_directory + "/" + cue_file.split("(Disc")[0])
+
+
+                shutil.copy(os.path.abspath(arguments[1] + "/" + cue_file), 
+                           os.path.abspath(output_directory + "/" + cue_file.split("(Disc")[0]))
+
+                shutil.copy(os.path.abspath(arguments[1] + 
+                                            "/" +cue_file.split(".cue")[0] + ".bin"), 
+                                            os.path.abspath(output_directory + "/" + 
+                                            cue_file.split("(Disc")[0]) + "/" +
+                                            cue_file.split(".cue")[0] + ".bin")
+
+                continue
+
+            else:
+                show_message("path for file " + cue_file + " wont found, create directory")
+                os.mkdir(output_directory + "/" + cue_file.split("(Disc")[0])
+                show_message("move file " + cue_file  + " to new directory")
+
+                shutil.copy(os.path.abspath(arguments[1] + "/" + cue_file), 
+                           os.path.abspath(output_directory + "/" + cue_file.split("(Disc")[0]))
+
+                shutil.copy(os.path.abspath(arguments[1] + 
+                                            "/" +cue_file.split(".cue")[0] + ".bin"), 
+                                            os.path.abspath(output_directory + "/" + 
+                                            cue_file.split("(Disc")[0]) + "/" +
+                                            cue_file.split(".cue")[0] + ".bin")
+
+            show_message(output_directory + "/" + cue_file)
              
 
 
@@ -32,6 +68,7 @@ def main(arguments : list):
             #                subprocess.run(cue2cu2_argumets)
             #
                
+
 # function scan files in input folder and reterns dictionary that has file names
 # as keys and values as count of bin files for every cue file 
 def scan_files(input_directory : list) -> dict:
@@ -39,8 +76,6 @@ def scan_files(input_directory : list) -> dict:
     cue_bin_files = {}
 
     for disc_file in input_directory:
-
-        bin_files_count = 0
 
         # for binmerge we need only file with .cue extension
         if disc_file.split('.')[-1] == 'cue':
