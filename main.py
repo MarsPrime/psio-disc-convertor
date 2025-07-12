@@ -8,7 +8,8 @@ def main(arguments : list):
     if (not check_arguments_validity(arguments)):
         return
 
-    output_directory = set_output_path(arguments)
+    # set ouput directory
+    output_directory = set_output_directory(arguments)
 
     # select path of disc images
     disc_files : list = os.listdir(arguments[1])
@@ -63,7 +64,7 @@ def check_input_path(path : str) -> bool:
         return False
 
 
-def check_output_path(path : str) -> str:
+def check_output_directory(path : str) -> str:
 
 
     if (os.path.isdir(path)):
@@ -79,7 +80,7 @@ def check_output_path(path : str) -> str:
         return "" 
 
 
-def create_output_path():
+def create_output_directory():
 
     if (not "converted" in os.listdir("./")):
 
@@ -91,7 +92,7 @@ def create_output_path():
         show_message("Use output path " +  str(os.path.abspath("./converted")))
 
 
-def set_output_path(arguments : list) -> str:
+def set_output_directory(arguments : list) -> str:
 
     if ("-o" in arguments):
 
@@ -100,7 +101,7 @@ def set_output_path(arguments : list) -> str:
     
     else:
         
-        create_output_path()
+        create_output_directory()
         return "./converted/"
 
 # check all given arguments
@@ -125,7 +126,7 @@ def check_arguments_validity(arguments : list) -> bool:
             return False
 
         # check if entered output directory is directory
-        elif (check_output_path(arguments[arguments.index("-o") + 1]) == ""):
+        elif (check_output_directory(arguments[arguments.index("-o") + 1]) == ""):
 
             show_message("Invalid argument for output directory. Entered argument " 
                   + arguments[arguments.index("-o") + 1]
