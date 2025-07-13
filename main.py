@@ -22,7 +22,7 @@ def main(arguments : list):
         if cue_files[cue_file] > 1:
 
              merge_bin_files(cue_file, arguments[1], output_directory)
-        else:
+        elif ("(Disc" in cue_file):
             
             move_multi_disc_files(cue_file, arguments[1], output_directory)
             
@@ -102,14 +102,7 @@ def move_multi_disc_files(cue_file : str, input_directory : str, output_director
         show_message("File " + cue_file + 
                      " moved to directory " + multi_disc_directory)
 
-
-        shutil.copy(os.path.abspath(input_directory + "/" + cue_file), 
-                    multi_disc_directory)
-
-        shutil.copy(os.path.abspath(input_directory + 
-                                    "/" +cue_file.split(".cue")[0] + ".bin"), 
-                                    multi_disc_directory + "/" +
-                                    cue_file.split(".cue")[0] + ".bin")
+        move_files_to_output_directory(cue_file, input_directory, multi_disc_directory)
 
     else:
 
@@ -119,13 +112,8 @@ def move_multi_disc_files(cue_file : str, input_directory : str, output_director
 
         show_message("move file " + cue_file  + " to new directory")
 
-        shutil.copy(os.path.abspath(input_directory + "/" + cue_file), 
-                   multi_disc_directory)
+        move_files_to_output_directory(cue_file, input_directory, multi_disc_directory)
 
-        shutil.copy(os.path.abspath(input_directory + 
-                                    "/" + cue_file.split(".cue")[0] + ".bin"), 
-                                    multi_disc_directory + "/" +
-                                    cue_file.split(".cue")[0] + ".bin")
 
     if (not check_multi_disc_file(multi_disc_directory)):
 
@@ -139,6 +127,15 @@ def move_multi_disc_files(cue_file : str, input_directory : str, output_director
 
     update_multidisc_file(multi_disc_directory)
 
+def move_files_to_output_directory(cue_file :str, input_directory : str, output_directory : str):
+
+        shutil.copy(os.path.abspath(input_directory + "/" + cue_file), 
+                    output_directory)
+
+        shutil.copy(os.path.abspath(input_directory + 
+                                    "/" +cue_file.split(".cue")[0] + ".bin"), 
+                                    output_directory + "/" +
+                                    cue_file.split(".cue")[0] + ".bin")
 
 def check_multi_disc_file(input_directory : str) -> bool:
 
