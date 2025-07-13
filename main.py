@@ -23,42 +23,9 @@ def main(arguments : list):
 
              merge_bin_files(cue_file, arguments[1], output_directory)
         else:
-
-            if (os.path.exists(output_directory + "/" + cue_file.split("(Disc")[0])):
-
-                show_message("File " + cue_file + 
-                             " moved to directory " + 
-                            output_directory + "/" + cue_file.split("(Disc")[0])
-
-
-                shutil.copy(os.path.abspath(arguments[1] + "/" + cue_file), 
-                           os.path.abspath(output_directory + "/" + cue_file.split("(Disc")[0]))
-
-                shutil.copy(os.path.abspath(arguments[1] + 
-                                            "/" +cue_file.split(".cue")[0] + ".bin"), 
-                                            os.path.abspath(output_directory + "/" + 
-                                            cue_file.split("(Disc")[0]) + "/" +
-                                            cue_file.split(".cue")[0] + ".bin")
-
-                continue
-
-            else:
-                show_message("path for file " + cue_file + " wont found, create directory")
-                os.mkdir(output_directory + "/" + cue_file.split("(Disc")[0])
-                show_message("move file " + cue_file  + " to new directory")
-
-                shutil.copy(os.path.abspath(arguments[1] + "/" + cue_file), 
-                           os.path.abspath(output_directory + "/" + cue_file.split("(Disc")[0]))
-
-                shutil.copy(os.path.abspath(arguments[1] + 
-                                            "/" +cue_file.split(".cue")[0] + ".bin"), 
-                                            os.path.abspath(output_directory + "/" + 
-                                            cue_file.split("(Disc")[0]) + "/" +
-                                            cue_file.split(".cue")[0] + ".bin")
-
-            show_message(output_directory + "/" + cue_file)
-             
-
+            
+            move_multi_disc_files(cue_file, arguments[1], output_directory)
+            
 
             #                
             #
@@ -123,6 +90,71 @@ def merge_bin_files(cue_file : str, input_directory : str,  output_directory : s
 
 
         show_message("File " + cue_file + " converted")
+
+# function move multi disc games to one folder and create file MULTIDISC.LST
+def move_multi_disc_files(cue_file : str, input_directory : str, output_directory : str):
+
+    multi_disc_directory = os.path.abspath(output_directory + "/" 
+                                           + cue_file.split("(Disc")[0])
+
+    if (os.path.exists(multi_disc_directory)):
+
+        show_message("File " + cue_file + 
+                     " moved to directory " + multi_disc_directory)
+
+
+        shutil.copy(os.path.abspath(input_directory + "/" + cue_file), 
+                    multi_disc_directory)
+
+        shutil.copy(os.path.abspath(input_directory + 
+                                    "/" +cue_file.split(".cue")[0] + ".bin"), 
+                                    multi_disc_directory + "/" +
+                                    cue_file.split(".cue")[0] + ".bin")
+
+    else:
+
+        show_message("path for file " + multi_disc_directory + " wont found, create directory")
+
+        os.mkdir(multi_disc_directory)
+
+        show_message("move file " + cue_file  + " to new directory")
+
+        shutil.copy(os.path.abspath(input_directory + "/" + cue_file), 
+                   multi_disc_directory)
+
+        shutil.copy(os.path.abspath(input_directory + 
+                                    "/" + cue_file.split(".cue")[0] + ".bin"), 
+                                    multi_disc_directory + "/" +
+                                    cue_file.split(".cue")[0] + ".bin")
+
+    if (not check_multi_disc_file(multi_disc_directory)):
+
+        show_message("File MULTIDISC.LST not found. Create new")
+        
+
+
+    else:
+        
+        show_message("File MULTIDISC.LST found. Update it")
+
+    update_multidisc_file(multi_disc_directory)
+
+
+def check_multi_disc_file(input_directory : str) -> bool:
+
+    return os.path.exists(input_directory + "/MULTIDISC.LST")
+
+def update_multidisc_file(input_directory : str):
+    
+    with open(input_directory + "/MULTIDISC.LST", "w") as multi_disc_file:
+        
+        for file in sorted(os.listdir(input_directory)):
+
+            if ".bin" in file:
+
+                multi_disc_file.write(file + "\n")
+
+            
 
 # if user don't set output folder create it manually
 def check_input_path(path : str) -> bool:
