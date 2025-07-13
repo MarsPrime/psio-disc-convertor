@@ -19,13 +19,24 @@ def main(arguments : list):
 
     for cue_file in cue_files:
          
+        show_message(cue_file)
+
         if cue_files[cue_file] > 1:
 
              merge_bin_files(cue_file, arguments[1], output_directory)
+
         elif ("(Disc" in cue_file):
             
             move_multi_disc_files(cue_file, arguments[1], output_directory)
+
+        else:
+
+            os.mkdir(os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0]))
+
+            move_files_to_output_directory(cue_file, arguments[1],
+                                           os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0]))
             
+        check_cue_for_cd_audio(cue_file, output_directory)
 
             #                
             #
@@ -115,15 +126,7 @@ def move_multi_disc_files(cue_file : str, input_directory : str, output_director
         move_files_to_output_directory(cue_file, input_directory, multi_disc_directory)
 
 
-    if (not check_multi_disc_file(multi_disc_directory)):
-
-        show_message("File MULTIDISC.LST not found. Create new")
-        
-
-
-    else:
-        
-        show_message("File MULTIDISC.LST found. Update it")
+    show_message("File MULTIDISC.LST found. Update it")
 
     update_multidisc_file(multi_disc_directory)
 
@@ -152,6 +155,26 @@ def update_multidisc_file(input_directory : str):
                 multi_disc_file.write(file + "\n")
 
             
+def check_cue_for_cd_audio(cue_file : str, input_directory : str):
+
+    cue_file_directory : str = (os.path.abspath(input_directory) + 
+                                "/" + cue_file.split(".cue")[0].split("(Disc")[0] + 
+                                "/" + cue_file)
+   
+
+    with open(cue_file_directory, "r") as opened_file:
+
+        content = opened_file.read()
+
+        if ("AUDIO" in content):
+
+            show_message("CD audio detected, use CUE2CU2")
+
+
+        
+
+
+
 
 # if user don't set output folder create it manually
 def check_input_path(path : str) -> bool:
