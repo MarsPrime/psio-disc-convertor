@@ -31,21 +31,17 @@ def main(arguments : list):
 
         else:
 
-            os.mkdir(os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0]))
+            if not os.path.exists(os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0])):
+
+                os.mkdir(os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0]))
 
             move_files_to_output_directory(cue_file, arguments[1],
                                            os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0]))
             
-        check_cue_for_cd_audio(cue_file, output_directory)
 
-            #                
-            #
-            #                cue2cu2_argumets = ["python3",
-            #                                "./cue2cu2/cue2cu2.py", 
-            #                         os.path.abspath(output_directory) + "/" + disc_file.split(".")[0]+ "/" + disc_file]
-            #                subprocess.run(cue2cu2_argumets)
-            #
-               
+        if (check_cue_for_cd_audio(cue_file, output_directory)):
+
+            make_cu2_file(cue_file, output_directory + "/" + cue_file.split(".cue")[0].split("(Disc")[0])
 
 # function scan files in input folder and reterns dictionary that has file names
 # as keys and values as count of bin files for every cue file 
@@ -155,7 +151,7 @@ def update_multidisc_file(input_directory : str):
                 multi_disc_file.write(file + "\n")
 
             
-def check_cue_for_cd_audio(cue_file : str, input_directory : str):
+def check_cue_for_cd_audio(cue_file : str, input_directory : str) -> bool:
 
     cue_file_directory : str = (os.path.abspath(input_directory) + 
                                 "/" + cue_file.split(".cue")[0].split("(Disc")[0] + 
@@ -169,9 +165,19 @@ def check_cue_for_cd_audio(cue_file : str, input_directory : str):
         if ("AUDIO" in content):
 
             show_message("CD audio detected, use CUE2CU2")
-
-
+            
+            return True
         
+        return False
+
+
+def make_cu2_file(cue_file : str, input_directory : str):
+    cue2cu2_argumets = ["python3",
+                    "./cue2cu2/cue2cu2.py", 
+                        os.path.abspath(input_directory) + "/" + cue_file]
+    show_message(input_directory + "/" + cue_file)
+    subprocess.run(cue2cu2_argumets)
+    
 
 
 
