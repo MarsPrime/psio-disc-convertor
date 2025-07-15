@@ -345,7 +345,6 @@ def show_dialog(text : str) -> bool:
             
             continue
         
-        
 
 if __name__ == "__main__":
     main(sys.argv)
