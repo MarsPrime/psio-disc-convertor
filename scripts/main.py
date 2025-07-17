@@ -3,6 +3,8 @@ import sys
 import subprocess
 import shutil
 
+import image_creator
+
 def main(arguments : list):
 
     if (not check_arguments_validity(arguments)):
@@ -42,6 +44,12 @@ def main(arguments : list):
         if (check_cue_for_cd_audio(cue_file, output_directory)):
 
             make_cu2_file(cue_file, output_directory + "/" + cue_file.split(".cue")[0].split("(Disc")[0])
+        
+
+    
+    set_game_covers(os.path.abspath(output_directory))
+        #image_creator.find_image(output_directory, output_directory)
+        
 
 # function scan files in input folder and reterns dictionary that has file names
 # as keys and values as count of bin files for every cue file 
@@ -86,7 +94,7 @@ def merge_bin_files(cue_file : str, input_directory : str,  output_directory : s
 
 
         binmerge_arguments = ["python3",
-                        "./binmerge/binmerge", 
+                        "../binmerge/binmerge", 
                         input_directory + "/" + cue_file,
                         cue_file.split(".")[0], 
                               "-o"]
@@ -94,7 +102,6 @@ def merge_bin_files(cue_file : str, input_directory : str,  output_directory : s
         binmerge_arguments.append(disc_path)
 
         subprocess.run(binmerge_arguments)
-
 
         show_message("File " + cue_file + " converted")
 
@@ -132,7 +139,7 @@ def move_files_to_output_directory(cue_file :str, input_directory : str, output_
                     output_directory)
 
         shutil.copy(os.path.abspath(input_directory + 
-                                    "/" +cue_file.split(".cue")[0] + ".bin"), 
+                                    "/" + cue_file.split(".cue")[0] + ".bin"), 
                                     output_directory + "/" +
                                     cue_file.split(".cue")[0] + ".bin")
 
@@ -173,7 +180,7 @@ def check_cue_for_cd_audio(cue_file : str, input_directory : str) -> bool:
 
 def make_cu2_file(cue_file : str, input_directory : str):
     cue2cu2_argumets = ["python3",
-                    "./cue2cu2/cue2cu2.py", 
+                    "../cue2cu2/cue2cu2.py", 
                         os.path.abspath(input_directory) + "/" + cue_file]
     show_message(input_directory + "/" + cue_file)
     subprocess.run(cue2cu2_argumets)
@@ -215,14 +222,14 @@ def check_output_directory(path : str) -> str:
 
 def create_output_directory():
 
-    if (not "converted" in os.listdir("./")):
+    if (not "converted" in os.listdir("../")):
 
-        os.mkdir("./converted")
-        show_message("Created output path " + str(os.path.abspath("./converted")))
+        os.mkdir("../converted")
+        show_message("Created output path " + str(os.path.abspath("../converted")))
 
     else:
 
-        show_message("Use output path " +  str(os.path.abspath("./converted")))
+        show_message("Use output path " +  str(os.path.abspath("..//converted")))
 
 
 def set_output_directory(arguments : list) -> str:
@@ -235,7 +242,7 @@ def set_output_directory(arguments : list) -> str:
     else:
         
         create_output_directory()
-        return "./converted/"
+        return "../converted/"
 
 # check all given arguments
 def check_arguments_validity(arguments : list) -> bool: 
@@ -309,6 +316,15 @@ def check_converted_file_existence(output_path : str) -> bool:
 
         return False
 
+def set_game_covers(output_directory : str):
+    print(os.path.abspath(output_directory))
+    
+    
+    for i in os.listdir(os.path.abspath(output_directory)):
+
+        file_directory = (output_directory + "/" + i)
+        image_creator.find_image(i.split("(")[0], file_directory)
+        
 def show_message(text : str):
 
     print()
