@@ -73,9 +73,11 @@ def convert_bytes_to_sectors(filesize):
 def convert_filesize_to_sectors(binaryfile):
 	if os.path.exists(binaryfile):
 		return convert_bytes_to_sectors(os.path.getsize(binaryfile))
+
 	elif cuesheet != None:
-        #print(cuesheet.split(".")[0] + "." + binaryfile.split(".")[-1])
+        # I (Mars Prime) have add this line to make program work when .cue and .bin files in the same directory
 		return convert_bytes_to_sectors(os.path.getsize(binaryfile))
+
 	else:
 		error("Cue sheet refers to a binary file, "+binaryfile+", that could not be found. To manually override, use the --size parameter. See --help.")
 

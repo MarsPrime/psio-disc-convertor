@@ -1,0 +1,116 @@
+
+####################
+Set input directory /home/demid/projects/psio-disc-converter/test
+####################
+
+
+####################
+Use output path /home/demid/projects/psio-disc-converter/converted
+####################
+
+
+####################
+BattleStations (Europe) (En,Fr,De).cue
+####################
+
+
+####################
+MegaMan Legends (Europe).cue
+####################
+
+
+####################
+Program detects converted files in output path for file MegaMan Legends (Europe). Delete this files? Enter y for YES or n for NO 
+####################
+Enter answer: 
+####################
+Set input directory /home/demid/projects/psio-disc-converter/test
+####################
+
+
+####################
+Use output path /home/demid/projects/psio-disc-converter/converted
+####################
+
+
+####################
+BattleStations (Europe) (En,Fr,De).cue
+####################
+
+
+####################
+MegaMan Legends (Europe).cue
+####################
+
+
+####################
+Program detects converted files in output path for file MegaMan Legends (Europe). Delete this files? Enter y for YES or n for NO 
+####################
+Enter answer: 
+
+####################
+User abort operation. Close.
+####################
+
+
+####################
+CD audio detected, use CUE2CU2
+####################
+
+
+####################
+../converted//MegaMan Legends (Europe)/MegaMan Legends (Europe).cue
+####################
+
+
+####################
+Wild 9 (Europe) (En,Fr,De,Es,It).cue
+####################
+
+
+####################
+Program detects converted files in output path for file Wild 9 (Europe) (En,Fr,De,Es,It). Delete this files? Enter y for YES or n for NO 
+####################
+Enter answer: 
+
+####################
+User abort operation. Close.
+####################
+
+
+####################
+CD audio detected, use CUE2CU2
+####################
+
+
+####################
+../converted//Wild 9 (Europe) (En,Fr,De,Es,It)/Wild 9 (Europe) (En,Fr,De,Es,It).cue
+####################
+
+/home/demid/projects/psio-disc-converter/converted
+
+####################
+Found games DB
+####################
+
+####################
+
+####################
+4
+####################
+
+0) 	 SLUS-00603 	 MEGAMAN LEGENDS 	 [E]
+1) 	 SLUS-01140 	 MEGAMAN LEGENDS 2 	 [E]
+2) 	 SLES-01485 	 MEGAMAN LEGENDS 	 [E]
+3) 	 SLES-03556 	 MEGAMAN LEGENDS 2 	 [E]
+
+####################
+Select one game from list by typing it's number in console.  If you want to go on previous page type p.  If you want to go on next page print n.
+####################
+
+####################
+
+####################
+4
+####################
+
