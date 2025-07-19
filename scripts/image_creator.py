@@ -1,3 +1,4 @@
+from sqlite3.dbapi2 import ProgrammingError
 import globals # file with all global functions
 import table_parser # file with table parser script for situation when GameDB don't created
 
@@ -42,6 +43,7 @@ def find_image(game_title : str, output_directory: str):
     else:
 
         globals.show_message("Program can't find games that has title like that")
+
         return
 
 def search_game_in_game_db(game_title : str) -> list:
@@ -70,9 +72,9 @@ def search_game_in_game_db(game_title : str) -> list:
         return games_list
 
 
-def show_game_selection_dialog(game_list : list, count : int) -> str:
+def show_game_selection_dialog(game_list : list, count : int) -> list:
 
-    print("#" * 20)
+    globals.show_message("Selecting game cover")
 
     list_end : int
 
@@ -81,9 +83,8 @@ def show_game_selection_dialog(game_list : list, count : int) -> str:
         list_end = len(game_list)
 
     else:
-        list_end = count + 10
 
-    globals.show_message(str(list_end))
+        list_end = count + 10
 
     for game in range(count, list_end):
 
@@ -96,7 +97,7 @@ def show_game_selection_dialog(game_list : list, count : int) -> str:
          " If you want to go on previous page type p. "
          " If you want to go on next page print n.")
 
-    return str(input())
+    return [str(input()), list_end]
 
 def select_game(game_list : list) -> int:
     
@@ -107,59 +108,49 @@ def select_game(game_list : list) -> int:
     elif len(game_list) < 1:
 
         return -1
-    
-    game_order_number: int = -1 
 
-    count = 0
+    game_number_in_list : int = -1
 
-    while (game_order_number == -1):
+    page_count : int = 0
 
-        answer = show_game_selection_dialog(game_list, count)
+    while (game_number_in_list == -1):
 
-        match answer:
+        answer = (show_game_selection_dialog(game_list, page_count))
 
-            case "n":
+        if answer[0] == "n":
 
-                if (count + 20 < len(game_list)):
+            if (page_count + 10 <= answer[1]):
 
-                    count += 10
+                page_count += 10
+
+            else:
+                
+                if (page_count < answer[1]):
+
+                    page_count =  answer[1] - (answer[1] - page_count)
+
+        elif answer[0] == "p":
+
+            if (page_count - 10 >= 0):
+                
+                page_count -= 10
+
+        else:
+            if (answer[0].isdigit() and answer != ""):
+
+                if (int(answer[0]) >= page_count and int(answer[0]) < answer[1]):
+
+                    return int(answer[0])
 
                 else:
+                    
+                    globals.show_message("Entered number is not in displayed list")
 
-                    count = len(game_list) - 10
+            else:
 
-                continue
+                globals.show_message("Enter number of game in list ")
 
-            case "p":
 
-                if (count - 10 >= 0):
-                    count -= 10
-
-                else:
-                    count = 0
-
-                continue
-
-            case _:
-
-                if (answer.isdigit() and answer != ""):
-
-                    if (int(answer) >= count and int(answer) < count + 10):
-
-                        game_order_number = int(answer)
-
-                    else:
-
-                        globals.show_message("Entered number is not in this list")
-
-                        continue
-                else:
-
-                    globals.show_message("Entered character not number or 'n' or 'r'")
-
-                    continue
-
-        return game_order_number 
         
 
 def find_game_cover_by_id(game_id : str) -> str:
@@ -170,7 +161,6 @@ def find_game_cover_by_id(game_id : str) -> str:
         if (id + ".jpg" in os.listdir("../game_covers/covers/default/")):
 
             globals.show_message("Cover found")
-
 
             return id + ".jpg" 
     

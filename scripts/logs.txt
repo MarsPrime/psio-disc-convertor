@@ -114,3 +114,75 @@ Select one game from list by typing it's number in console.  If you want to go o
 4
 ####################
 
+
+####################
+Set input directory /home/demid/projects/psio-disc-converter/images
+####################
+
+
+####################
+
+        For correct cu2 sheets you need to enter your PSIO menu system version 
+
+        1 - If your version less than 2.8 enter
+
+        2 - Else enter
+
+                     
+####################
+
+
+####################
+1
+####################
+
+
+####################
+Use output path /home/demid/projects/psio-disc-converter/converted
+####################
+
+
+####################
+Armored Core (Europe) (En,Fr,De,Es,It).cue
+####################
+
+
+####################
+Army Men 3D (Europe) (En,Fr,De).cue
+####################
+
+
+####################
+Program detects converted files in output path for file Army Men 3D (Europe) (En,Fr,De). Delete this files? Enter y for YES or n for NO 
+####################
+Enter answer: 
+
+####################
+User abort operation. Close.
+####################
+
+
+####################
+CD audio detected, use CUE2CU2
+####################
+
+
+####################
+../converted//Army Men 3D (Europe) (En,Fr,De)/Army Men 3D (Europe) (En,Fr,De).cue
+####################
+
+
+####################
+Battle Stations (Europe) (En,Fr,De).cue
+####################
+
+
+####################
+Bloody Roar - Hyper Beast Duel (Europe).cue
+####################
+
+
+####################
+Program detects converted files in output path for file Bloody Roar - Hyper Beast Duel (Europe). Delete this files? Enter y for YES or n for NO 
+####################
+Enter answer: 
