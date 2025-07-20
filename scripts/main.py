@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import shutil
+import re
 
 import image_creator
 import globals
@@ -10,6 +11,8 @@ def main(arguments : list):
 
     if (not check_arguments_validity(arguments)):
         return
+    
+    input_directory = arguments[1]
 
     # set system console version
     format_mode = check_menu_console_version()
@@ -18,40 +21,103 @@ def main(arguments : list):
     output_directory = set_output_directory(arguments)
 
     # select path of disc images
-    input_directory_files: list = os.listdir(arguments[1])
+    input_directory_files: list = os.listdir(input_directory)
 
+    # create dictonary with all .cue files and theirs .bin files quantity
     cue_files = scan_files(sorted(input_directory_files))
 
+    # main converting funcrion
+    convert_files(cue_files, arguments, input_directory, output_directory, format_mode)
+
+
+def convert_files(cue_files : dict, 
+                  arguments : list, 
+                  input_directory : str,
+                  output_directory : str,
+                  format_mode : int):
+
+    # cicle that parse all files in input directory and then convert them
     for cue_file in cue_files:
-         
-        globals.show_message(cue_file)
 
-        if cue_files[cue_file] > 1:
+        game_title : str = extract_game_title(cue_file)
+        file_output_directory : str = os.path.abspath(output_directory + "/" + game_title)
+        check_file_output_directory(file_output_directory)
 
-             merge_bin_files(cue_file, arguments[1], output_directory)
+        if cue_files[cue_file] == 0:
 
-        elif ("(Disc" in cue_file):
+            globals.show_message(f"File {cue_file} do not have related .bin files. Skip")
+            continue
+
+        elif cue_files[cue_file] == 1:
             
-            move_multi_disc_files(cue_file, arguments[1], output_directory)
+            if (check_if_file_multidisc(cue_file)):
+
+                move_files_to_output_directory(cue_file, input_directory, file_output_directory)
+
+                update_multidisc_file(file_output_directory)
+
+            else:
+
+                move_files_to_output_directory(cue_file, input_directory, file_output_directory)
 
         else:
 
-            if not os.path.exists(os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0])):
+            merge_bin_files(cue_file, game_title, input_directory, file_output_directory)
+        
 
-                os.mkdir(os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0]))
-
-            move_files_to_output_directory(cue_file, arguments[1],
-                                           os.path.abspath(output_directory + "/" + cue_file.split(".cue")[0]))
-
-        if (check_cue_for_cd_audio(cue_file, output_directory)):
+        if (check_cue_for_cd_audio(cue_file, file_output_directory)):
 
             make_cu2_file(
                     cue_file, 
-                    output_directory + "/" + cue_file.split(".cue")[0].split("(Disc")[0],
+                    file_output_directory,
                     format_mode)
         
     set_game_covers(os.path.abspath(output_directory))
+
+
+# if output file directory does not exists create it
+def check_file_output_directory(directory : str):
+
+    if not (os.path.exists(directory)):
+
+       globals.show_message(f"Create directory {directory}") 
+       os.mkdir(directory)
+
+    else:
         
+        globals.show_message(f"Directory {directory} exists")
+        
+
+def extract_game_title(cue_file : str) -> str:
+    game_title = cue_file.split(".cue")[0]
+    game_title = re.split(r" \(Disc [0-9]\)", game_title)[0]
+    game_title = re.split(r"\(USA\)", game_title)[0]
+    game_title = re.split(r"\(Europe\)", game_title)[0]
+    game_title = re.split(r"\(Russia\)", game_title)[0]
+    game_title = re.split(r"\(Europe.+?\)", game_title)[0]
+    game_title = re.split(r"\(Japan\)", game_title)[0]
+    
+    if game_title[-1] == " ":
+        game_title = game_title[:-1]
+
+    return game_title
+
+
+def check_related_bin_files(bin_files_count : int) -> int:
+
+    if bin_files_count == 0:
+        return 0
+
+    elif bin_files_count == 1:
+        return 1
+
+    else:
+        return 2
+
+def check_if_file_multidisc(cue_file : str) -> bool:
+
+    return (re.search("(Disc [0-9])", cue_file) != None)
+
 
 # function scan files in input folder and reterns dictionary that has file names
 # as keys and values as count of bin files for every cue file 
@@ -81,59 +147,19 @@ def scan_bin_files(input_directory : list, disc_file: str) -> int:
     return bin_files_count
 
 # function that will execute binmerge
-def merge_bin_files(cue_file : str, input_directory : str,  output_directory : str):
+def merge_bin_files(cue_file : str, title : str, input_directory : str,  output_directory : str):
 
-    disc_path = output_directory + "/" + cue_file.split(".")[0]
+    binmerge_arguments = ["python3", 
+                          "../binmerge/binmerge", 
+                          input_directory + "/" + cue_file, 
+                          cue_file.split(".cue")[0], 
+                          "-o", 
+                          output_directory]
 
-    if (not delete_converted_files(cue_file, disc_path)):
+    subprocess.run(binmerge_arguments)
 
-        return 
+    globals.show_message("File " + cue_file + " converted")
 
-    else:
-
-        if (not os.path.exists(output_directory + "/" + cue_file.split(".")[0])):
-            os.mkdir(output_directory + "/" + cue_file.split(".")[0])
-
-
-        binmerge_arguments = ["python3",
-                        "../binmerge/binmerge", 
-                        input_directory + "/" + cue_file,
-                        cue_file.split(".")[0], 
-                              "-o"]
-
-        binmerge_arguments.append(disc_path)
-
-        subprocess.run(binmerge_arguments)
-
-        globals.show_message("File " + cue_file + " converted")
-
-# function move multi disc games to one folder and create file MULTIDISC.LST
-def move_multi_disc_files(cue_file : str, input_directory : str, output_directory : str):
-
-    multi_disc_directory = os.path.abspath(output_directory + "/" 
-                                           + cue_file.split("(Disc")[0])
-
-    if (os.path.exists(multi_disc_directory)):
-
-        globals.show_message("File " + cue_file + 
-                     " moved to directory " + multi_disc_directory)
-
-        move_files_to_output_directory(cue_file, input_directory, multi_disc_directory)
-
-    else:
-
-        globals.show_message("path for file " + multi_disc_directory + " wont found, create directory")
-
-        os.mkdir(multi_disc_directory)
-
-        globals.show_message("move file " + cue_file  + " to new directory")
-
-        move_files_to_output_directory(cue_file, input_directory, multi_disc_directory)
-
-
-    globals.show_message("File MULTIDISC.LST found. Update it")
-
-    update_multidisc_file(multi_disc_directory)
 
 def move_files_to_output_directory(cue_file :str, input_directory : str, output_directory : str):
 
@@ -144,10 +170,6 @@ def move_files_to_output_directory(cue_file :str, input_directory : str, output_
                                     "/" + cue_file.split(".cue")[0] + ".bin"), 
                                     output_directory + "/" +
                                     cue_file.split(".cue")[0] + ".bin")
-
-def check_multi_disc_file(input_directory : str) -> bool:
-
-    return os.path.exists(input_directory + "/MULTIDISC.LST")
 
 def update_multidisc_file(input_directory : str):
     
@@ -160,14 +182,10 @@ def update_multidisc_file(input_directory : str):
                 multi_disc_file.write(file + "\n")
 
             
-def check_cue_for_cd_audio(cue_file : str, input_directory : str) -> bool:
+def check_cue_for_cd_audio(cue_file : str, file_directory : str) -> bool:
 
-    cue_file_directory : str = (os.path.abspath(input_directory) + 
-                                "/" + cue_file.split(".cue")[0].split("(Disc")[0] + 
-                                "/" + cue_file)
-   
 
-    with open(cue_file_directory, "r") as opened_file:
+    with open(file_directory + "/" + cue_file, "r") as opened_file:
 
         content = opened_file.read()
 
@@ -188,14 +206,15 @@ def make_cu2_file(cue_file : str, input_directory : str, format_mode : int):
                         os.path.abspath(input_directory) + "/" + cue_file, 
                         "-f", str(format_mode)]
 
-    globals.show_message(input_directory + "/" + cue_file)
     subprocess.run(cue2cu2_argumets)
     
 
 def check_menu_console_version() -> int:
+
     wrong_answer : bool = True
 
     while wrong_answer:
+
         globals.show_message('''
         For correct cu2 sheets you need to enter your PSIO menu system version \n
         1 - If your version less than 2.8 enter\n
@@ -204,7 +223,6 @@ def check_menu_console_version() -> int:
 
         answer : str = str(input())
         
-        globals.show_message(answer)
 
         if (not answer.isdigit()):
             globals.show_message("Entered string has letter. Enter the 1 or 2 in terminal")
@@ -305,44 +323,6 @@ def check_arguments_validity(arguments : list) -> bool:
 
     return True
 
-def delete_converted_files(disc_file : str, output_directory : str) -> bool:
-
-    if (check_converted_file_existence(os.path.abspath(output_directory) + 
-                                       "/" +
-                                       disc_file)):
-        message : str = "Program detects converted files in output path "
-        message += "for file " + disc_file.split(".")[0] + "."
-        message += " Delete this files? Enter y for YES or n for NO "
-
-        if (not globals.show_dialog(message)):
-
-            globals.show_message("User abort operation. Close.")
-            
-            return False
-
-        else:
-            
-            globals.show_message("Delete converted files")
-
-            os.remove(os.path.abspath(output_directory) + "/" + disc_file)
-            os.remove(os.path.abspath(output_directory) + "/" 
-                      + disc_file.split(".")[0] + ".bin")
-
-            return True
-
-    return True
-
-
-
-def check_converted_file_existence(output_path : str) -> bool:
-
-    if os.path.exists(output_path):
-
-        return True
-    
-    else:
-
-        return False
 
 def set_game_covers(output_directory : str):
     

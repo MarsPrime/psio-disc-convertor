@@ -16,6 +16,7 @@ def show_dialog(text : str) -> bool:
         print()
         print(20 * "#")
         print(text)
+        print("Enter y for YES or n for NO")
         print(20 * "#")
 
         answer = input("Enter answer: ")
