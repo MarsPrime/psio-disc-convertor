@@ -5,7 +5,7 @@ import sqlite3 as sql
 
 
 def main():
-
+    
     data_files : list = select_data_files()
 
     for file in data_files:
@@ -58,9 +58,17 @@ def parse_data(file : str):
                     data = data.split("  -  ")[0]
                     data = data.split(" [ 2")[0].split((" [2"))[0]
 
-                    data =  "".join(re.split("-*[0-9] DISCS*", data))
-                    
+                    data = "".join(re.split("-*[0-9] DISCS*", data))
+
                     data = data.replace("[ ]", "")
+
+                    if "Includes" in data:
+
+                        data = re.split(r"Includes:", data)[0]
+
+                    if "[" in data and len(data.replace("[","").replace("]", "")) > 20:
+                        
+                        data = data.split("[")[0]
 
                     data += "\t"
 
