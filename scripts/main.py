@@ -6,13 +6,15 @@ import re
 
 import image_creator
 import globals
+import file_name_changer
 
 def main(arguments : list):
 
     if (not check_arguments_validity(arguments)):
         return
     
-    input_directory = arguments[1]
+    input_directory = os.path.abspath(arguments[1])
+    
 
     # set system console version
     format_mode = check_menu_console_version()
@@ -26,12 +28,15 @@ def main(arguments : list):
     # create dictonary with all .cue files and theirs .bin files quantity
     cue_files = scan_files(sorted(input_directory_files))
 
+    for file in cue_files:
+
+        file_name_changer.change_file_names(input_directory)
+
     # main converting funcrion
-    convert_files(cue_files, arguments, input_directory, output_directory, format_mode)
+    convert_files(cue_files, input_directory, output_directory, format_mode)
 
 
 def convert_files(cue_files : dict, 
-                  arguments : list, 
                   input_directory : str,
                   output_directory : str,
                   format_mode : int):
@@ -39,7 +44,7 @@ def convert_files(cue_files : dict,
     # cicle that parse all files in input directory and then convert them
     for cue_file in cue_files:
 
-        game_title : str = extract_game_title(cue_file)
+        game_title : str = globals.extract_game_title(cue_file)
         file_output_directory : str = os.path.abspath(output_directory + "/" + game_title)
         check_file_output_directory(file_output_directory)
 
@@ -70,6 +75,7 @@ def convert_files(cue_files : dict,
             make_cu2_file(
                     cue_file, 
                     file_output_directory,
+                    game_title,
                     format_mode)
         
     set_game_covers(os.path.abspath(output_directory))
@@ -87,21 +93,6 @@ def check_file_output_directory(directory : str):
         
         globals.show_message(f"Directory {directory} exists")
         
-
-def extract_game_title(cue_file : str) -> str:
-    game_title = cue_file.split(".cue")[0]
-    game_title = re.split(r" \(Disc [0-9]\)", game_title)[0]
-    game_title = re.split(r"\(USA\)", game_title)[0]
-    game_title = re.split(r"\(Europe\)", game_title)[0]
-    game_title = re.split(r"\(Russia\)", game_title)[0]
-    game_title = re.split(r"\(Europe.+?\)", game_title)[0]
-    game_title = re.split(r"\(Japan\)", game_title)[0]
-    
-    if game_title[-1] == " ":
-        game_title = game_title[:-1]
-
-    return game_title
-
 
 def check_related_bin_files(bin_files_count : int) -> int:
 
@@ -198,13 +189,14 @@ def check_cue_for_cd_audio(cue_file : str, file_directory : str) -> bool:
         return False
 
 
-def make_cu2_file(cue_file : str, input_directory : str, format_mode : int):
+def make_cu2_file(cue_file : str, input_directory : str, title : str, format_mode : int):
     
 
     cue2cu2_argumets = ["python3",
                     "../cue2cu2/cue2cu2.py", 
                         os.path.abspath(input_directory) + "/" + cue_file, 
                         "-f", str(format_mode)]
+                        #"--name", input_directory + "/" + title]
 
     subprocess.run(cue2cu2_argumets)
     
@@ -276,7 +268,7 @@ def create_output_directory():
 
     else:
 
-        globals.show_message("Use output path " +  str(os.path.abspath("..//converted")))
+        globals.show_message("Use output path " +  str(os.path.abspath("../converted")))
 
 
 def set_output_directory(arguments : list) -> str:
