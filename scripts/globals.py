@@ -1,11 +1,13 @@
 import re
+import os
 
+terminal_columns = os.get_terminal_size().columns
 def show_message(text : str):
 
     print()
-    print(20 * "#")
+    print(terminal_columns* "#")
     print(text)
-    print(20 * "#")
+    print(terminal_columns* "#")
     print()
 
 def show_dialog(text : str) -> bool:
@@ -16,10 +18,10 @@ def show_dialog(text : str) -> bool:
     while (dialog_cicle):
 
         print()
-        print(20 * "#")
+        print(terminal_columns * "#")
         print(text)
         print("Enter y for YES or n for NO")
-        print(20 * "#")
+        print(terminal_columns * "#")
 
         answer = input("Enter answer: ")
 
@@ -40,19 +42,6 @@ def show_dialog(text : str) -> bool:
 def extract_game_title(cue_file : str) -> str:
     game_title = cue_file.split(".cue")[0]
     game_title = re.split(r" \(Disc [0-9]\)", game_title)[0]
-    game_title = re.split(r"\(USA\)", game_title)[0]
-    game_title = re.split(r"\(Europe\)", game_title)[0]
-    game_title = re.split(r"\(Russia\)", game_title)[0]
-    game_title = re.split(r"\(Europe.+?\)", game_title)[0]
-    game_title = re.split(r"\(Japan\)", game_title)[0]
-    
-    if game_title[-1] == " ":
-        game_title = game_title[:-1]
-
-    return game_title
-
-def extract_game_title_with_discs(cue_file : str) -> str:
-    game_title = cue_file.split(".cue")[0]
     game_title = re.split(r"\(USA\)", game_title)[0]
     game_title = re.split(r"\(Europe\)", game_title)[0]
     game_title = re.split(r"\(Russia\)", game_title)[0]

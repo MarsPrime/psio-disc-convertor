@@ -63,16 +63,16 @@ def find_image(game_title : str, output_directory: str):
 
 def search_game_in_game_db(game_title : str) -> list:
 
-        game_title = game_title.split(" - ")[0]
+        #game_title = game_title.split(" - ")[0]
 
+        #if game_title[-1] == " ":
+            #game_title = game_title[:-1]
 
-        if game_title[-1] == " ":
-            game_title = game_title[:-1]
+        game_title = globals.extract_game_title(game_title)
 
         connection : sql.Connection = sql.connect("../game_db_creator/GameDB")
         cursor : sql.Cursor = connection.cursor()
         
-        print(game_title)
         cursor.execute('''
         SELECT GAME_TITLE, GAME_ID, LANGUAGES FROM Games WHERE GAME_TITLE LIKE(?);
         ''', ("%" + game_title + "%", ))
