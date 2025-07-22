@@ -1,4 +1,3 @@
-from sqlite3.dbapi2 import ProgrammingError
 import globals # file with all global functions
 import table_parser # file with table parser script for situation when GameDB don't created
 
@@ -24,9 +23,9 @@ def find_image(game_title : str, output_directory: str):
 
     suggested_games = search_game_in_game_db(game_title)
 
+    print(suggested_games)
 
     if suggested_games != []:
-
 
         game_in_list = select_game(suggested_games)
 
@@ -43,8 +42,24 @@ def find_image(game_title : str, output_directory: str):
     else:
 
         globals.show_message("Program can't find games that has title like that")
+        
+        correct_answer : str = ""
+        while (correct_answer == ""):
 
-        return
+            globals.show_message(f'''Enter game title manually if you want to find game cover 
+                                 for title: {game_title}
+                                 If you don't want to do this just press enter''')
+
+            answer : str = input()
+
+            if answer == "":
+
+                return
+
+            else:
+                find_image(answer, output_directory)
+                return
+
 
 def search_game_in_game_db(game_title : str) -> list:
 
@@ -60,7 +75,7 @@ def search_game_in_game_db(game_title : str) -> list:
         print(game_title)
         cursor.execute('''
         SELECT GAME_TITLE, GAME_ID, LANGUAGES FROM Games WHERE GAME_TITLE LIKE(?);
-        ''', ("%" + game_title.replace("-", "") + "%", ))
+        ''', ("%" + game_title + "%", ))
 
         found_games_list = cursor.fetchall()
 
@@ -179,8 +194,4 @@ def create_game_cover_image(cover_file : str, output_directory : str):
     converted_cover_file = default_cover_file.resize((80, 84))
     
     converted_cover_file.save(output_directory + "/cover.bmp")
-
-
-
-
 
