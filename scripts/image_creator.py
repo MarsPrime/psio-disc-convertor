@@ -57,9 +57,10 @@ def search_game_in_game_db(game_title : str) -> list:
         connection : sql.Connection = sql.connect("../game_db_creator/GameDB")
         cursor : sql.Cursor = connection.cursor()
         
+        print(game_title)
         cursor.execute('''
         SELECT GAME_TITLE, GAME_ID, LANGUAGES FROM Games WHERE GAME_TITLE LIKE(?);
-        ''', ("%" + game_title + "%", ))
+        ''', ("%" + game_title.replace("-", "") + "%", ))
 
         found_games_list = cursor.fetchall()
 

@@ -14,11 +14,11 @@ def main(arguments : list):
         return
     
     input_directory = os.path.abspath(arguments[1])
-    
+   
 
     # set system console version
     format_mode = check_menu_console_version()
-
+   
     # set ouput directory
     output_directory = set_output_directory(arguments)
 
@@ -28,13 +28,11 @@ def main(arguments : list):
     # create dictonary with all .cue files and theirs .bin files quantity
     cue_files = scan_files(sorted(input_directory_files))
 
-    for file in cue_files:
-
-        file_name_changer.change_file_names(input_directory)
 
     # main converting funcrion
     convert_files(cue_files, input_directory, output_directory, format_mode)
 
+    file_name_changer.change_file_names(output_directory)
 
 def convert_files(cue_files : dict, 
                   input_directory : str,
