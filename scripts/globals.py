@@ -1,14 +1,19 @@
 import re
 import os
+import time
+
+from termcolor import colored, cprint
 
 terminal_columns = os.get_terminal_size().columns
 def show_message(text : str):
 
     print()
-    print(terminal_columns* "#")
+    cprint(terminal_columns * "#", "green")
     print(text)
-    print(terminal_columns* "#")
+    cprint(terminal_columns * "#", "green")
     print()
+
+    time.sleep(1)
 
 def show_dialog(text : str) -> bool:
     
@@ -18,10 +23,10 @@ def show_dialog(text : str) -> bool:
     while (dialog_cicle):
 
         print()
-        print(terminal_columns * "#")
+        cprint(terminal_columns * "#", "yellow")
         print(text)
-        print("Enter y for YES or n for NO")
-        print(terminal_columns * "#")
+        cprint("Enter y for YES or n for NO", "red", attrs=["bold"])
+        cprint(terminal_columns * "#", "yellow")
 
         answer = input("Enter answer: ")
 
@@ -52,3 +57,15 @@ def extract_game_title(cue_file : str) -> str:
         game_title = game_title[:-1]
 
     return game_title
+            
+def update_multidisc_file(input_directory : str):
+
+     
+    with open(input_directory + "/MULTIDISC.LST", "w", encoding="cp1251") as multi_disc_file:
+        
+        for file in sorted(os.listdir(input_directory)):
+
+            if ".bin" in file:
+
+                multi_disc_file.write(file + "\r\n")
+

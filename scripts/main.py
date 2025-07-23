@@ -3,12 +3,17 @@ import sys
 import subprocess
 import shutil
 import re
+import time
 
 import image_creator
 import globals
 import file_name_changer
 
+import colorama
+
 def main(arguments : list):
+
+    colorama.init()
 
     if (not check_arguments_validity(arguments)):
         return
@@ -17,20 +22,24 @@ def main(arguments : list):
    
 
     # set system console version
-    format_mode = check_menu_console_version()
-   
-    # set ouput directory
+   # format_mode = check_menu_console_version()
+   #
+   # # set ouput directory
     output_directory = set_output_directory(arguments)
 
-    # select path of disc images
-    input_directory_files: list = os.listdir(input_directory)
+   # # delete output directory to prevent errors with overwriting
+   # shutil.rmtree(output_directory)
+   # os.mkdir(output_directory)
 
-    # create dictonary with all .cue files and theirs .bin files quantity
-    cue_files = scan_files(sorted(input_directory_files))
+   # # select path of disc images
+   # input_directory_files: list = os.listdir(input_directory)
+
+   # # create dictonary with all .cue files and theirs .bin files quantity
+   # cue_files = scan_files(sorted(input_directory_files))
 
 
-    # main converting funcrion
-    convert_files(cue_files, input_directory, output_directory, format_mode)
+   # # main converting funcrion
+   # convert_files(cue_files, input_directory, output_directory, format_mode)
 
     file_name_changer.change_file_names(output_directory)
 
@@ -49,6 +58,7 @@ def convert_files(cue_files : dict,
         if cue_files[cue_file] == 0:
 
             globals.show_message(f"File {cue_file} do not have related .bin files. Skip")
+            
             continue
 
         elif cue_files[cue_file] == 1:
@@ -57,7 +67,7 @@ def convert_files(cue_files : dict,
 
                 move_files_to_output_directory(cue_file, input_directory, file_output_directory)
 
-                update_multidisc_file(file_output_directory)
+                globals.update_multidisc_file(file_output_directory)
 
             else:
 
@@ -84,12 +94,14 @@ def check_file_output_directory(directory : str):
 
     if not (os.path.exists(directory)):
 
-       globals.show_message(f"Create directory {directory}") 
-       os.mkdir(directory)
+        globals.show_message(f"Create directory {directory}") 
+        os.mkdir(directory)
+        
 
     else:
         
         globals.show_message(f"Directory {directory} exists")
+        
         
 
 def check_related_bin_files(bin_files_count : int) -> int:
@@ -160,15 +172,6 @@ def move_files_to_output_directory(cue_file :str, input_directory : str, output_
                                     output_directory + "/" +
                                     cue_file.split(".cue")[0] + ".bin")
 
-def update_multidisc_file(input_directory : str):
-    
-    with open(input_directory + "/MULTIDISC.LST", "w") as multi_disc_file:
-        
-        for file in sorted(os.listdir(input_directory)):
-
-            if ".bin" in file:
-
-                multi_disc_file.write(file + "\n")
 
             
 def check_cue_for_cd_audio(cue_file : str, file_directory : str) -> bool:
@@ -216,6 +219,7 @@ def check_menu_console_version() -> int:
 
         if (not answer.isdigit()):
             globals.show_message("Entered string has letter. Enter the 1 or 2 in terminal")
+            
 
         else:
 
@@ -224,6 +228,7 @@ def check_menu_console_version() -> int:
 
             else:
                 globals.show_message("Entered number is not 1 or 2. Enter the 1 or 2 in terminal")
+                
 
 
 # if user don't set output folder create it manually
@@ -232,12 +237,13 @@ def check_input_path(path : str) -> bool:
     if os.path.isdir(path):
 
         globals.show_message("Set input directory " + str(os.path.abspath(path)))
-
+        
         return True
 
     else:
 
         globals.show_message("Inserted argument is not directory")
+        
 
         return False
 
@@ -247,12 +253,13 @@ def check_output_directory(path : str) -> str:
     if (os.path.isdir(path)):
 
         globals.show_message("Set output directory in " + str(os.path.abspath(path)))
-
+        
         return path
 
     else:
 
         globals.show_message("No output directory inserted")
+        
 
         return "" 
 
@@ -263,10 +270,12 @@ def create_output_directory():
 
         os.mkdir("../converted")
         globals.show_message("Created output path " + str(os.path.abspath("../converted")))
+        
 
     else:
 
         globals.show_message("Use output path " +  str(os.path.abspath("../converted")))
+        
 
 
 def set_output_directory(arguments : list) -> str:

@@ -7,9 +7,11 @@ def change_file_names(input_directory : str ):
     for file in os.listdir(input_directory):
         
         if os.path.isdir(os.path.abspath(input_directory) + "/" + file):
+
             change_file_names(os.path.abspath(input_directory) + "/" + file)
         
-        else:
+        elif os.path.isfile(os.path.abspath(input_directory) + "/" + file):
+
 
             new_file_name = replace_all_region_data(file)
 
@@ -27,6 +29,9 @@ def change_file_names(input_directory : str ):
             os.replace(os.path.abspath(input_directory) + "/" + file, 
                        os.path.abspath(input_directory) + "/" + new_file_name)
 
+            if ("MULTIDISC.LST" in os.listdir(os.path.abspath(input_directory))):
+                globals.update_multidisc_file(
+                  os.path.abspath(input_directory))
 
 def replace_all_region_data(file_name :str):
     file_name = file_name.replace(" (Europe)", "")
@@ -96,12 +101,15 @@ def change_file_names_manually(input_directory : str, new_file_name : str):
 
     for file in os.listdir(os.path.abspath(input_directory)):
         file_extension : str = file.split(".")[-1]
+
         if file_extension == "cue":
 
             change_data_in_cue(file, input_directory, new_file_name)
 
         os.rename(os.path.abspath(input_directory) + "/" + file, 
                   os.path.abspath(input_directory) + "/" + new_file_name + "." + file_extension)
+
     os.rename(os.path.abspath(input_directory), 
               "/".join(os.path.abspath(input_directory).split("/")[:-1]) + "/" + new_file_name)
+
 

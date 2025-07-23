@@ -4,14 +4,11 @@ import table_parser # file with table parser script for situation when GameDB do
 import os
 import sqlite3 as sql
 from PIL import Image
+import time
 
 def find_image(game_title : str, output_directory: str):
     
-    if (os.path.exists("../game_db_creator/GameDB")):
-
-        globals.show_message("Found games DB")
-
-    else:
+    if not (os.path.exists("../game_db_creator/GameDB")):
 
         globals.show_message("Games DB not found. Create new")
 
@@ -21,9 +18,8 @@ def find_image(game_title : str, output_directory: str):
         globals.show_message("DB created")
 
 
-    suggested_games = search_game_in_game_db(game_title)
 
-    print(suggested_games)
+    suggested_games = search_game_in_game_db(game_title)
 
     if suggested_games != []:
 
@@ -42,6 +38,7 @@ def find_image(game_title : str, output_directory: str):
     else:
 
         globals.show_message("Program can't find games that has title like that")
+        
         
         correct_answer : str = ""
         while (correct_answer == ""):
@@ -91,6 +88,7 @@ def search_game_in_game_db(game_title : str) -> list:
 def show_game_selection_dialog(game_list : list, count : int) -> list:
 
     globals.show_message("Selecting game cover")
+    
 
     list_end : int
 
@@ -161,11 +159,12 @@ def select_game(game_list : list) -> int:
                 else:
                     
                     globals.show_message("Entered number is not in displayed list")
+                    
 
             else:
 
                 globals.show_message("Enter number of game in list ")
-
+                
 
         
 
@@ -173,15 +172,12 @@ def find_game_cover_by_id(game_id : str) -> str:
 
     for id in game_id.split(" "):
 
-        print(id)
         if (id + ".jpg" in os.listdir("../game_covers/covers/default/")):
-
-            globals.show_message("Cover found")
 
             return id + ".jpg" 
     
     globals.show_message("Cover don't found for game " + game_id)
-
+    
     return ""
     
 
