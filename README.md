@@ -39,6 +39,7 @@ uv run main.py /input_directory -o /output_directory
 
 - [ ] Some games after converting has wierd sound (some track starts, plays about 10 seconds and then stops and plays again). This problem can be related with bad image files or some issues when game have merged in one bin file (I'm not sure about that)
 
+## About contributing
 Feel free to review and change code!
 
 ## Special Thanks
