@@ -16,6 +16,14 @@ It's just wrapper for this programs, sites and repositories:
 5) Program generate DB with game IDs, Titles and Languages (if DB is not created);
 6) Program create game covers for every game.
 
+## Usage
+```bash
+# uv
+# run script from /scripts directory
+uv run main.py /input_directory -o /output_directory
+```
+**-o** - change output directory, defalult is it ./converted (at the same directory as executable)
+
 ## Pros 
 - Program converts all files automaticly: all program need is enter directory where image files is and directory where he wants files to contain after convertation;
 - Program works without connection to Internet: all images and databases are local;
@@ -26,14 +34,6 @@ It's just wrapper for this programs, sites and repositories:
 - My code: It's my first open source project and due my inexperince some things in file or code can be wierd or stupid, but I work on them;
 - Program is testing: I need more time for testing and more people to test my project to collect new ideas and solve problems that I don't see now;
 - Platforms: For now I test project on my main PC with GNU/Linux Debian 12. Testing for Windows will be soon (I need some time to make VM and configure it). Testing for MacOS is not that neccessary (because both Linux and MacOS are Unix and works about the same, I guess).
-
-## Usage
-```bash
-# uv
-# run script from /scripts directory
-uv run main.py /input_directory -o /output_directory
-```
-**-o** - change output directory, defalult is it ./converted (at the same directory as executable)
 
 ## Issues
 
