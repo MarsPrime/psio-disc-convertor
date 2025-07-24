@@ -3,7 +3,6 @@ import sys
 import subprocess
 import shutil
 import re
-import time
 
 import image_creator
 import globals
@@ -22,24 +21,24 @@ def main(arguments : list):
    
 
     # set system console version
-   # format_mode = check_menu_console_version()
-   #
+    format_mode = check_menu_console_version()
+
    # # set ouput directory
     output_directory = set_output_directory(arguments)
 
-   # # delete output directory to prevent errors with overwriting
-   # shutil.rmtree(output_directory)
-   # os.mkdir(output_directory)
+    # delete output directory to prevent errors with overwriting
+    shutil.rmtree(output_directory)
+    os.mkdir(output_directory)
 
-   # # select path of disc images
-   # input_directory_files: list = os.listdir(input_directory)
+    # select path of disc images
+    input_directory_files: list = os.listdir(input_directory)
 
-   # # create dictonary with all .cue files and theirs .bin files quantity
-   # cue_files = scan_files(sorted(input_directory_files))
+    # create dictonary with all .cue files and theirs .bin files quantity
+    cue_files = scan_files(sorted(input_directory_files))
 
 
-   # # main converting funcrion
-   # convert_files(cue_files, input_directory, output_directory, format_mode)
+    # main converting funcrion
+    convert_files(cue_files, input_directory, output_directory, format_mode)
 
     file_name_changer.change_file_names(output_directory)
 
