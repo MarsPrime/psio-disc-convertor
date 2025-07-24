@@ -85,7 +85,7 @@ def check_menu_console_version() -> int:
         globals.show_message('''
         For correct cu2 sheets you need to enter your PSIO menu system version \n
         1 - If your version less than 2.8 \n
-        2 - If your system more than 2.8 \n
+        2 - If your system equal or more than 2.8 \n
                      ''')
 
         answer : str = str(input())
@@ -247,7 +247,7 @@ def check_file_output_directory(directory : str):
         
     else:
         
-        globals.show_message(f"Directory {directory} exists")
+        globals.show_message(f"Use {directory}")
         
 def check_if_image_is_multidisc(cue_file : str) -> bool:
 

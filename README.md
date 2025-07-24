@@ -8,17 +8,36 @@ It's just wrapper for this programs, sites and repositories:
 - xlenore/psx-covers : game covers
 - https://psxdatacenter.com/ : I took from them table of discs codes and disc names 
 
+## How it work
+1) Program checks all arguments that was entered in terminal;
+2) Program scans files in input directory;
+3) Program replace files in output directory or merge .bin files if needed;
+4) Program make .cu2 sheets for images with CD audio;
+5) Program generate DB with game IDs, Titles and Languages (if DB is not created);
+6) Program create game covers for every game.
+
+## Pros 
+- Program converts all files automaticly: all program need is enter directory where image files is and directory where he wants files to contain after convertation;
+- Program works without connection to Internet: all images and databases are local;
+- Program uses Python: it's very simple to modificate code if needed;
+
+## Cons
+- Only CLI (Command Line Interface): I think about creating UI in QT but for now this is what it is;
+- My code: It's my first open source project and due my inexperince some things in file or code can be wierd or stupid, but I work on them;
+- Program is testing: I need more time for testing and more people to test my project to collect new ideas and solve problems that I don't see now;
+- Platforms: For now I test project on my main PC with GNU/Linux Debian 12. Testing for Windows will be soon (I need some time to make VM and configure it). Testing for MacOS is not that neccessary (because both Linux and MacOS are Unix and works about the same, I guess).
+
 ## Usage
-```bash 
-# python3
-python3 main.py /game_file.cue -o /output_directory
-
+```bash
 # uv
-uv run main.py /game_file.cue -o /output_directory
-
+# run script from /scripts directory
+uv run main.py /input_directory -o /output_directory
 ```
-**-o** - change output directory, defalult is it ./converted (at the same direcory as executable)
+**-o** - change output directory, defalult is it ./converted (at the same directory as executable)
 
+## Issues
+
+- [ ] Some games after converting has wierd sound (some track starts, plays about 10 seconds and then stops and plays again). This problem can be related with bad image files or some issues when game have merged in one bin file (I'm not sure about that)
 
 Feel free to review and change code!
 
