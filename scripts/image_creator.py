@@ -4,7 +4,6 @@ import table_parser # file with table parser script for situation when GameDB do
 import os
 import sqlite3 as sql
 from PIL import Image
-import time
 
 def find_image(game_title : str, output_directory: str):
     
@@ -59,11 +58,6 @@ def find_image(game_title : str, output_directory: str):
 
 
 def search_game_in_game_db(game_title : str) -> list:
-
-        #game_title = game_title.split(" - ")[0]
-
-        #if game_title[-1] == " ":
-            #game_title = game_title[:-1]
 
         game_title = globals.extract_game_title(game_title)
 
@@ -165,8 +159,6 @@ def select_game(game_list : list) -> int:
 
                 globals.show_message("Enter number of game in list ")
                 
-
-        
 
 def find_game_cover_by_id(game_id : str) -> str:
 
