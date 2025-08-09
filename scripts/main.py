@@ -1,4 +1,5 @@
 import os
+import time
 import sys
 import subprocess
 import shutil
@@ -30,6 +31,14 @@ def main(arguments : list):
     shutil.rmtree(output_directory)
     os.mkdir(output_directory)
 
+    if os.path.exists("../temp"):
+        shutil.rmtree("../temp")
+
+    os.mkdir("../temp")
+
+    move_all_disc_files_to_temp_directory(input_directory)
+    input_directory = "../temp/"
+
     # select path of disc images
     input_directory_files: list = os.listdir(input_directory)
 
@@ -41,6 +50,9 @@ def main(arguments : list):
     convert_files(cue_files, input_directory, output_directory, format_mode)
 
     file_name_changer.change_file_names(output_directory)
+
+    if os.path.exists("../temp"):
+        shutil.rmtree("../temp")
 
 # check all given arguments
 def check_arguments_validity(arguments : list) -> bool: 
@@ -87,22 +99,26 @@ def check_menu_console_version() -> int:
         1 - If your version less than 2.8 \n
         2 - If your system equal or more than 2.8 \n
                      ''')
-
         answer : str = str(input())
-        
 
         if (not answer.isdigit()):
             globals.show_message("Entered string has letter. Enter the 1 or 2 in terminal")
-            
-
         else:
-
             if(answer == "1" or answer == "2"):
                 return int(answer)
-
             else:
                 globals.show_message("Entered number is not 1 or 2. Enter the 1 or 2 in terminal")
-                
+
+def move_all_disc_files_to_temp_directory(input_directory : str):
+    for i in os.listdir(input_directory):
+
+        if os.path.isdir(input_directory + "/" + i):
+            move_all_disc_files_to_temp_directory(input_directory + "/" + i)
+
+        if (".cue" in i or ".bin" in i):
+            shutil.copy(input_directory + "/" + i, 
+                        os.path.abspath("../temp") + "/" + i)
+
 def check_output_directory(path : str) -> str:
 
     if (os.path.isdir(path)):
