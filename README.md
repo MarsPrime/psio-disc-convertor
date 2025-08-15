@@ -26,9 +26,12 @@ uv run main.py /input_directory -o /output_directory
 
 ## Dependenses
 
-| Package        | Version | Usage |
-| -------------  | ------- | ----- |
-| beautifulsoup4 |         |       |
+| Package        | Version | Usage                                |
+| -------------  | ------- | ------------------------------------ |
+| beautifulsoup4 | 4.13.4  | HTML parsing for data to GameList.db |
+| colorama       | 0.4.6   | Colors in terminal                   |
+| pillow         | 11.3.0  | Resize and convert cover images      |
+| termcolor      | 3.1.0   | Colors in terminal                   |
 
 
 ## Pros 
