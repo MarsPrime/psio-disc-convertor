@@ -56,12 +56,15 @@ def main(arguments : list):
 
 # check all given arguments
 def check_arguments_validity(arguments : list) -> bool: 
+    message : str
 
     if (not check_input_path(arguments[1])):
 
-        globals.show_message("Invalid argument for input directory. Entered argument " 
-              + arguments[1] 
-              + " is not directory. Please check --help")
+        message = f"""
+    Invalid argument for input directory. Entered argument {arguments[1]}
+    is not directory. Please check --help
+    """
+        globals.show_message(message)
 
         return False
     
@@ -70,17 +73,19 @@ def check_arguments_validity(arguments : list) -> bool:
         # check if directory path after --o exists
         if (len(arguments) < arguments.index("-o") + 1):
 
-            globals.show_message("Invalid argument for output directory. Output directory " +
-                  "can't be empty")
-            
+            message = """Invalid argument for output directory. Output director can't be empty"""
+
+            globals.show_message(message)
+
             return False
 
         # check if entered output directory is directory
         elif (check_output_directory(arguments[arguments.index("-o") + 1]) == ""):
 
-            globals.show_message("Invalid argument for output directory. Entered argument " 
-                  + arguments[arguments.index("-o") + 1]
-                  + " is not directory. Please check --help")
+            message = f"""Invalid argument for output directory. Entered argument 
+                  {arguments[arguments.index("-o") + 1]} is not directory. 
+                  Please check --help"""
+            globals.show_message(message)
 
             return False
 

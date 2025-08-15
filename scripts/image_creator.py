@@ -16,8 +16,6 @@ def find_image(game_title : str, output_directory: str):
 
         globals.show_message("DB created")
 
-
-
     suggested_games = search_game_in_game_db(game_title)
 
     if suggested_games != []:
@@ -33,29 +31,25 @@ def find_image(game_title : str, output_directory: str):
             if (cover_file != ""):
 
                 create_game_cover_image(cover_file, output_directory) 
+                globals.show_message(f"Created cover image for {game_title}")
     
     else:
-
         globals.show_message("Program can't find games that has title like that")
-        
-        
         correct_answer : str = ""
         while (correct_answer == ""):
-
-            globals.show_message(f'''Enter game title manually if you want to find game cover 
-                                 for title: {game_title}
-                                 If you don't want to do this just press enter''')
+            globals.show_message(
+f'''Enter game title manually if you want to find game cover 
+for title: {game_title}
+If you don't want to do this just press enter''')
 
             answer : str = input()
 
             if answer == "":
-
                 return
 
             else:
                 find_image(answer, output_directory)
                 return
-
 
 def search_game_in_game_db(game_title : str) -> list:
 
@@ -82,7 +76,6 @@ def search_game_in_game_db(game_title : str) -> list:
 def show_game_selection_dialog(game_list : list, count : int) -> list:
 
     globals.show_message("Selecting game cover")
-    
 
     list_end : int
 
@@ -101,9 +94,11 @@ def show_game_selection_dialog(game_list : list, count : int) -> list:
               game_list[game][2])
 
 
-    globals.show_message("Select one game from list by typing it's number in console. "
-         " If you want to go on previous page type p. "
-         " If you want to go on next page print n.")
+    globals.show_message(
+'''Select one game from list by typing it's number in console. 
+If you want to go on previous page type p. 
+If you want to go on next page print n.'''
+)
 
     return [str(input()), list_end]
 
@@ -118,45 +113,34 @@ def select_game(game_list : list) -> int:
         return -1
 
     game_number_in_list : int = -1
-
     page_count : int = 0
 
     while (game_number_in_list == -1):
 
         answer = (show_game_selection_dialog(game_list, page_count))
-
         if answer[0] == "n":
 
             if (page_count + 10 <= answer[1]):
-
                 page_count += 10
 
             else:
-                
                 if (page_count < answer[1]):
-
                     page_count =  answer[1] - (answer[1] - page_count)
 
         elif answer[0] == "p":
-
             if (page_count - 10 >= 0):
-                
                 page_count -= 10
 
         else:
             if (answer[0].isdigit() and answer != ""):
 
                 if (int(answer[0]) >= page_count and int(answer[0]) < answer[1]):
-
                     return int(answer[0])
 
                 else:
-                    
                     globals.show_message("Entered number is not in displayed list")
                     
-
             else:
-
                 globals.show_message("Enter number of game in list ")
                 
 
@@ -165,21 +149,17 @@ def find_game_cover_by_id(game_id : str) -> str:
     for id in game_id.split(" "):
 
         if (id + ".jpg" in os.listdir("../game_covers/covers/default/")):
-
             return id + ".jpg" 
-    
+
     globals.show_message("Cover don't found for game " + game_id)
-    
     return ""
     
 
 def create_game_cover_image(cover_file : str, output_directory : str):
 
     game_covers_directory = "../game_covers/covers/default/"
-
     default_cover_file = Image.open(game_covers_directory + cover_file)
-
     converted_cover_file = default_cover_file.resize((80, 84))
-    
     converted_cover_file.save(output_directory + "/cover.bmp")
+
 
