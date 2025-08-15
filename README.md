@@ -24,6 +24,13 @@ uv run main.py /input_directory -o /output_directory
 ```
 **-o** - change output directory, defalult is it ./converted (at the same directory as executable)
 
+## Dependenses
+
+| Package        | Version | Usage |
+| -------------  | ------- | ----- |
+| beautifulsoup4 |         |       |
+
+
 ## Pros 
 - Program converts all files automaticly: all program need is enter directory where image files is and directory where he wants files to contain after convertation;
 - Program works without connection to Internet: all images and databases are local;
