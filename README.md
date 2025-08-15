@@ -22,7 +22,7 @@ It's just wrapper for this programs, sites and repositories:
 # run script from /scripts directory
 uv run main.py /input_directory -o /output_directory
 ```
-**-o** - change output directory, defalult is it ./converted (at the same directory as executable)
+**-o** - change output directory, defalult is it ./converted (at the same directory as executable file)
 
 ## Dependenses
 
